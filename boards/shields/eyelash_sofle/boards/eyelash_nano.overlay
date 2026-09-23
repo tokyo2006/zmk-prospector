@@ -16,7 +16,6 @@
 #include <zephyr/dt-bindings/gpio/gpio.h>
 
 /delete-node/ &touch_sensor;
-/delete-node/ &apds9960;
 
 &i2c0 {
     status = "disabled";
