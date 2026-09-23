@@ -2,7 +2,7 @@
  * eyelash_nano pin mapping for the Prospector ST7789 display.
  *
  * Build with prospector_adapter listed before eyelash_sofle_prospector_dongle
- * so this overlay replaces the adapter's hardcoded XIAO pins and CST816S.
+ * so this overlay can drop the adapter's CST816S touch panel.
  *
  * Signal  eyelash_nano
  * SDA     P1.15 (D18)
@@ -14,6 +14,7 @@
  */
 
 #include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/pwm/pwm.h>
 
 /delete-node/ &touch_sensor;
 
@@ -21,8 +22,13 @@
     status = "disabled";
 };
 
-&i2c1 {
-    status = "disabled";
+/ {
+    pwmleds {
+        compatible = "pwm-leds";
+        disp_bl: pwm_led_1 {
+            pwms = <&pwm1 0 PWM_MSEC(1) PWM_POLARITY_NORMAL>;
+        };
+    };
 };
 
 &pinctrl {
@@ -56,11 +62,55 @@
     };
 };
 
-&disp_spi {
+disp_spi: &spi3 {
+    status = "okay";
+    pinctrl-0 = <&spi3_default>;
+    pinctrl-1 = <&spi3_sleep>;
+    pinctrl-names = "default", "sleep";
     cs-gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
 };
 
-&{/mipi_dbi} {
-    dc-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>;
-    reset-gpios = <&gpio0 11 GPIO_ACTIVE_LOW>;
+/ {
+    mipi_dbi {
+        compatible = "zephyr,mipi-dbi-spi";
+        spi-dev = <&spi3>;
+        dc-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>;
+        reset-gpios = <&gpio0 11 GPIO_ACTIVE_LOW>;
+        write-only;
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        st7789: st7789v@0 {
+            compatible = "sitronix,st7789v";
+            mipi-max-frequency = <30000000>;
+            mipi-mode = "MIPI_DBI_MODE_SPI_4WIRE";
+            reg = <0>;
+            width = <240>;
+            height = <280>;
+            x-offset = <0>;
+            y-offset = <20>;
+            vcom = <0x19>;
+            gctrl = <0x35>;
+            vrhs = <0x12>;
+            vdvs = <0x20>;
+            mdac = <0x00>;
+            gamma = <0x01>;
+            colmod = <0x05>;
+            lcm = <0x2c>;
+            porch-param = [0c 0c 00 33 33];
+            cmd2en-param = [5a 69 02 01];
+            pwctrl1-param = [a4 a1];
+            pvgam-param = [d0 04 0d 11 13 2b 3f 54 4c 18 0d 0b 1f 23];
+            nvgam-param = [d0 04 0c 11 13 2c 3f 44 51 2f 1f 1f 20 23];
+            ram-param = [00 f0];
+            rgb-param = [cd 08 14];
+        };
+    };
+};
+
+&pwm1 {
+    status = "okay";
+    pinctrl-0 = <&pwm1_default>;
+    pinctrl-1 = <&pwm1_sleep>;
+    pinctrl-names = "default", "sleep";
 };
