@@ -18,6 +18,8 @@ manifest:
       url-base: https://github.com/S7venYoung
     - name: englmaxi
       url-base: https://github.com/englmaxi
+    - name: a741725193
+      url-base: https://github.com/a741725193
   projects:
     - name: mario-peripheral-animation
       remote: gpeye
@@ -80,5 +82,8 @@ manifest:
     - name: prospector-zmk-module
       remote: s7venyoung
       revision: core/zephyr-4-1
+    - name: zmk-board-eyelash
+      remote: a741725193
+      revision: v4.0
   self:
     path: config

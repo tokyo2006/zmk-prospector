@@ -155,6 +155,7 @@ static void queue_theme_switch(int8_t direction) {
     pending_direction = direction;
 }
 
+#if DT_NODE_HAS_STATUS_OKAY(DT_NODELABEL(touch_sensor))
 static void theme_touch_callback(struct input_event *event, void *user_data) {
     ARG_UNUSED(user_data);
 
@@ -219,6 +220,7 @@ static void theme_touch_callback(struct input_event *event, void *user_data) {
 }
 
 INPUT_CALLBACK_DEFINE(DEVICE_DT_GET(DT_NODELABEL(touch_sensor)), theme_touch_callback, NULL);
+#endif
 
 lv_obj_t *__wrap_zmk_display_status_screen(void) {
     const lv_color_t charcoal = lv_color_hex(0x101411);

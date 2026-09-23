@@ -1,0 +1,67 @@
+/*
+ * eyelash_nano pin mapping for the Prospector ST7789 display.
+ *
+ * Build with prospector_adapter listed before eyelash_sofle_prospector_dongle
+ * so this overlay replaces the adapter's hardcoded XIAO pins and CST816S.
+ *
+ * Signal  eyelash_nano
+ * SDA     P1.15 (D18)
+ * SCL     P1.13 (D15)
+ * CS      P1.06 (D9)
+ * DC      P1.04 (D8)
+ * RES     P0.11 (D7)
+ * BLK     P1.11 (D14)
+ */
+
+#include <zephyr/dt-bindings/gpio/gpio.h>
+
+/delete-node/ &touch_sensor;
+/delete-node/ &apds9960;
+
+&i2c0 {
+    status = "disabled";
+};
+
+&i2c1 {
+    status = "disabled";
+};
+
+&pinctrl {
+    spi3_default: spi3_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 1, 13)>,
+                    <NRF_PSEL(SPIM_MOSI, 1, 15)>;
+        };
+    };
+
+    spi3_sleep: spi3_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 1, 13)>,
+                    <NRF_PSEL(SPIM_MOSI, 1, 15)>;
+            low-power-enable;
+        };
+    };
+
+    pwm1_default: pwm1_default {
+        group1 {
+            psels = <NRF_PSEL(PWM_OUT0, 1, 11)>;
+            nordic,invert;
+        };
+    };
+
+    pwm1_sleep: pwm1_sleep {
+        group1 {
+            psels = <NRF_PSEL(PWM_OUT0, 1, 11)>;
+            low-power-enable;
+        };
+    };
+};
+
+&disp_spi {
+    cs-gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
+};
+
+&{/mipi_dbi} {
+    dc-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>;
+    reset-gpios = <&gpio0 11 GPIO_ACTIVE_LOW>;
+};
