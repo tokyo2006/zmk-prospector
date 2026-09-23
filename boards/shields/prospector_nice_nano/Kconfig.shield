@@ -1,0 +1,2 @@
+config SHIELD_PROSPECTOR_NICE_NANO
+    def_bool $(shields_list_contains,prospector_nice_nano)

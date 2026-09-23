@@ -1,10 +1,10 @@
 /*
- * eyelash_nano pin mapping for the Prospector ST7789 display.
+ * nice!nano pin mapping for the Prospector ST7789 display.
  *
- * Build with prospector_adapter listed before eyelash_sofle_prospector_dongle
- * so this overlay can drop the adapter's CST816S touch panel.
+ * List this shield after prospector_adapter so it can drop the adapter's
+ * CST816S touch panel.
  *
- * Signal  eyelash_nano
+ * Signal  nice!nano
  * SDA     P1.15 (D18)
  * SCL     P1.13 (D15)
  * CS      P1.06 (D9)
